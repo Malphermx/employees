@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { HeaderComponent } from '../components/header-component'
 import DropFileInput from '../components/dropFileInput-component'
+
 const Upload = () => {
+
   const onFileChange = (files:any) => {
     console.log(files);
   }

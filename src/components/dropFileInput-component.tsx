@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
+import {CSSTransition} from 'react-transition-group'
 import { ImageConfig } from '../config/ImageConfig'; 
+import PopUpCarrousel from './ui/popUpCarrousel';
 import uploadImg from '../assets/img/cloud-upload-regular-240.png';
 
 const DropFileInput = (props:any) => {
@@ -9,6 +11,8 @@ const DropFileInput = (props:any) => {
 
     const [fileList, setFileList] = useState([]);
     const [state, setState] = useState([])
+    const [show, setShow] = useState(Boolean)
+    const [success, setSuccess] = useState(Boolean)
 
     const onDragEnter = () => wrapperRef.current.classList.add('dragover');
 
@@ -23,22 +27,11 @@ const DropFileInput = (props:any) => {
             setFileList(updatedList);
             props.onFileChange(updatedList);
             const archivoUrl= URL.createObjectURL(newFile)
-            const updateURL:any = [...state, archivoUrl];
-            // arrayURL.push(archivoUrl)
+            const updateURL:any = [...state, archivoUrl]
             setState(updateURL)
-            // state.imgUrl.push(archivoUrl)
         }
         
     }
-
-    // useEffect(() => {
-    //   if(state?.length === 0){
-        
-    //   }
-    
-     
-    // }, [state])
-    
 
     // const fileRemove = (file:any) => {
     //     const updatedList = [...fileList];
@@ -50,25 +43,48 @@ const DropFileInput = (props:any) => {
 
     return (
         <>
+            <CSSTransition
+                in={show}
+                timeout={200} 
+                classNames="popUpAnimate"
+                unmountOnExit>
+                <PopUpCarrousel onClose={()=>{setShow(false)}} imagenes={state}></PopUpCarrousel>
+            </CSSTransition>
+           
             <div   className='storage container'>
                 <div className="row">
-                    {state?.length === undefined ?
-                        <div>De momento no has subido imágenes</div>    
+                    {state?.length === 0 ?
+                        <div className='text-medium text--verde text-center'>No hay imágenes :C</div>    
                     :
                         <>
-                        {state?.map((item,id):any =>{
-                            console.log(item)
-                            console.log(id)
-                            return ( 
-                                <div key={id} className="col" onClick={()=>{}}>
-                                    <img src={item}  width={'150px'} height={'150px'}/>
-                                </div>
-                            )
-                        })}
+                            <div className='text text--verde text-center my-2'>Haz click en tu imagen para previsualizar</div>
+                            {state?.map((item,id):any =>{
+                                return ( 
+                                    <div key={id} className="col-sm-12 col-md-4 cursor-pointer d-flex justify-content-center" onClick={()=>{setShow(true)}}>
+                                        <img src={item} className="m-auto"  width={'150px'} height={'150px'}/>
+                                    </div>
+                                )
+                            })}
                         </>
+
                     }
                 </div>
+                
             </div>
+            {success?
+                <div>Se guardo en el LocalStorage Correctamente</div>
+                :
+                null
+            }
+            
+            <div className='btn mt-2' onClick={()=>{
+                const imagenes:any = state
+                window.localStorage.setItem('imagenes', JSON.stringify(imagenes) )
+                setSuccess(true)
+                setTimeout(() => {
+                    setSuccess(false)
+                },2000);
+             }}>Guadar Imágenes</div>
             <div
                 ref={wrapperRef}
                 className="drop-file-input my-3"
