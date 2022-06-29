@@ -1,0 +1,30 @@
+@media (max-width: 1400px){
+    
+}
+@media (max-width: 992px) {
+  
+}
+@media (max-width: 768px) { 
+    .form{
+        width: 100%;
+        padding: 0 20px;
+    }
+ 
+}
+@media (max-width: 576px){
+    .form-login{
+        min-width: 100%;
+    }
+    .input-search{
+        width: 200px;
+    }
+    .popUp{
+        min-width: 100%;
+    }
+    .drop-file-input{
+        width: 100%;
+    }
+}
+@media (max-width:400px){
+
+}
