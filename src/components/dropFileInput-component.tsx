@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { ImageConfig } from '../config/ImageConfig'; 
 import uploadImg from '../assets/img/cloud-upload-regular-240.png';
@@ -8,6 +8,7 @@ const DropFileInput = (props:any) => {
     const wrapperRef:any = useRef(null);
 
     const [fileList, setFileList] = useState([]);
+    const [state, setState] = useState([])
 
     const onDragEnter = () => wrapperRef.current.classList.add('dragover');
 
@@ -21,9 +22,23 @@ const DropFileInput = (props:any) => {
             const updatedList:any = [...fileList, newFile];
             setFileList(updatedList);
             props.onFileChange(updatedList);
+            const archivoUrl= URL.createObjectURL(newFile)
+            const updateURL:any = [...state, archivoUrl];
+            // arrayURL.push(archivoUrl)
+            setState(updateURL)
+            // state.imgUrl.push(archivoUrl)
         }
-        console.log(fileList)
+        
     }
+
+    // useEffect(() => {
+    //   if(state?.length === 0){
+        
+    //   }
+    
+     
+    // }, [state])
+    
 
     // const fileRemove = (file:any) => {
     //     const updatedList = [...fileList];
@@ -35,6 +50,25 @@ const DropFileInput = (props:any) => {
 
     return (
         <>
+            <div   className='storage container'>
+                <div className="row">
+                    {state?.length === undefined ?
+                        <div>De momento no has subido imágenes</div>    
+                    :
+                        <>
+                        {state?.map((item,id):any =>{
+                            console.log(item)
+                            console.log(id)
+                            return ( 
+                                <div key={id} className="col" onClick={()=>{}}>
+                                    <img src={item}  width={'150px'} height={'150px'}/>
+                                </div>
+                            )
+                        })}
+                        </>
+                    }
+                </div>
+            </div>
             <div
                 ref={wrapperRef}
                 className="drop-file-input my-3"
@@ -48,18 +82,6 @@ const DropFileInput = (props:any) => {
                 </div>
                 <input type="file" value="" onChange={onFileDrop}/>
             </div>
-            {/* {fileList.length > 0 ? (
-                <>
-                    {fileList.map((id:any,item:any) =>{
-                        console.log(item)
-                        return(
-                            <div key={id}>
-        
-                            </div>
-                        )
-                    })}
-                </>
-            ):null} */}
             
         </>
     );
